@@ -1,0 +1,9 @@
+*.pyc
+__pycache__
+ngrok
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
