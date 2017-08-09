@@ -9,9 +9,6 @@ touch /srv/logs/gunicorn.log
 touch /srv/logs/access.log
 tail -n 0 -f /srv/logs/*.log &
 
-# export settings module as environmental variable
-export DJANGO_SETTINGS_MODULE=config.settings.staging
-
 # Start Gunicorn processes
 echo Starting Gunicorn.
 
