@@ -12,12 +12,11 @@ tail -n 0 -f /srv/logs/*.log &
 # Start Gunicorn processes
 echo Starting Gunicorn.
 exec gunicorn config.wsgi:application \
-    --name your_app_name \
     --bind 0.0.0.0:8000 \
     --workers 1 \
     --log-level=info \
     --log-file=/srv/logs/gunicorn.log \
     --access-logfile=/srv/logs/access.log &
-    
+
 # Start nginx
 exec service nginx start

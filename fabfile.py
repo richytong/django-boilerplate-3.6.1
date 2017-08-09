@@ -1,37 +1,22 @@
 import os
 from fabric.api import task, local
 
-region = "us-east-1"
-image = "pinktest:latest"
-endpoint = "329161652620.dkr.ecr.us-east-1.amazonaws.com/manager:latest"
+account  = 'youraccount'
+region   = 'us-east-1'
+image    = 'pinktest:latest'
+endpoint = f'{account}.dkr.ecr.{region}.amazonaws.com/{image}'
 
-'''
-push to production
-'''
-@task
-def make(spec=False):
-	login()
-	build(spec)
-	push()
-	clean()
-	eb(spec)
 
-'''
-start the server inside the docker container
-'''
-@task
-def start(spec=None):
-	if spec == 'local':
-		local('python src/manage.py runserver')
-	else:
-		local('docker run -p 8000:8000 {}'.format(image))
-
+####################################################################################
+################################## BUILD TASKS #####################################
+####################################################################################
 '''
 Build the single image using the only Dockerfile
 required_args: spec -- {'staging', 'production'}, specify which settings to use
 '''
 @task
 def build(spec):
+	assert spec in {'staging', 'production'}
 	spec = 'config.settings.' + spec
 	local(
 		'docker build' + 
@@ -42,31 +27,39 @@ def build(spec):
 	)
 
 '''
+Removes old images with 'none' tag, cleans up your docker images
+'''
+@task
+def clean():
+	try:
+		local('docker rmi -f $(docker images | grep none | awk \'{print $3}\')')
+	except:
+		print('No images removed, exiting')
+
+
+####################################################################################
+################################# DEPLOYMENT TASKS #################################
+####################################################################################
+'''
 If AWS not letting you push, execute this from your aws cli environment.
 Gets login and executes resulting output
 '''
 @task
 def login():
-	local(local('''
-		aws ecr get-login
-			--region {}
-			--no-include-email
-		'''.format(region), capture=True
-	))
+	local(
+		'$(' +
+		'aws ecr get-login' +
+		' --region ' + region +
+		' --no-include-email' +
+		')'
+	)
 
 '''
 Tags image for aws ecs repository then pushes to that repository.
 '''
 @task
 def push():
-	local("docker push {}".format(endpoint))
-
-'''
-Removes old images with "none" tag, cleans up your docker images
-'''
-@task
-def clean():
-	local("docker rmi -f $(docker images | grep none | awk '{print $3}')")
+	local(f'docker push {endpoint}')
 
 '''
 Deploys using eb deploy, requires the correct .elasticbeanstalk/config.yml
@@ -86,4 +79,47 @@ def eb(spec=None):
 		v = local("eb status {}".format(staging_env), capture=True).split("\n")[3].split(":")[1].strip().split("-")
 		v_new = "{}-{}-{}".format(v[0], v[1], str(int(v[2]) + 1))
 		local("eb deploy -l {} {}".format(v_new, staging_env))
+
+
+####################################################################################
+################################### RUN TASKS ######################################
+####################################################################################
+'''
+start the server inside the docker container
+'''
+@task
+def start(spec=None):
+	if spec == 'dev':
+		local('python src/manage.py runserver')
+	if spec == 'bash':
+		try:
+			local(f'docker run -it {image} /bin/bash')
+		except:
+			print(f'Unable to find {image}, please check the image')
+	else:
+		try:
+			local(f'docker run -p 80:80 {image}')
+		except:
+			print(f'Unable to find {image}, please check the image')
+
+'''
+stop the container running latest image
+'''
+@task
+def stop():
+	try:
+		local('docker stop $(docker ps | grep ' + image + ' | awk \'{print $1}\')')
+	except:
+		print(f'No processes with {image} to stop, exiting')
+
+'''
+attach to the container running the latest image, run bash
+need to have started it already
+'''
+@task
+def attach():
+	try:
+		local('docker exec -it $(docker ps | grep ' + image + ' | awk \'{print $1}\') /bin/bash')
+	except:
+		print(f'No processes with {image} to attach, exiting')
 
