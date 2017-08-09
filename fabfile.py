@@ -37,7 +37,7 @@ def build(spec):
 		'docker build' + 
 		' -t ' + image +
 		' -f Dockerfile' +
-		' --build-arg DJANGO_PROJECT_SETTINGS=' + spec +
+		' --build-arg DJANGO_SETTINGS_MODULE=' + spec +
 		' .'
 	)
 

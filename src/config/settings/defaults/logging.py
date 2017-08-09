@@ -1,4 +1,4 @@
-# A sample logging configuration.
+# A sample adequate logging configuration.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {

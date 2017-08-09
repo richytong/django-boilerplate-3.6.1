@@ -4,25 +4,18 @@ FROM ubuntu:16.10
 # Set the file maintainer
 MAINTAINER Richard Tong
 
-# Take a build arg specifying an argument to gunicorn-start.sh
-# Specify which DJANGO_PROJECT_SETTINGS {'staging', 'production'} to use
 # Export DJANGO_SETTINGS_MODULE here
-ARG DJANGO_PROJECT_SETTINGS
-ENV DJANGO_SETTINGS_MODULE ${DJANGO_PROJECT_SETTINGS}
+ARG DJANGO_SETTINGS_MODULE
+ENV DJANGO_SETTINGS_MODULE ${DJANGO_SETTINGS_MODULE}
 
-# Set env variables used in this Dockerfile
-# Local directory with project source
+# Set env path variables used in this Dockerfile
 ENV DOCKYARD_SRC=src
-
-# Directory in container for all project files
 ENV DOCKYARD_SRVHOME=/srv
-
-# Directory in container for project source files
 ENV DOCKYARD_SRVPROJ=$DOCKYARD_SRVHOME/$DOCKYARD_SRC
 
 # Update the default application repository sources list
 RUN apt-get update && apt-get -y upgrade
-RUN apt-get install -y python3.6 python-pip python3.6-dev
+RUN apt-get install -y python3.6 python-pip python3.6-dev nginx
 
 # Create application subdirectories
 WORKDIR $DOCKYARD_SRVHOME
@@ -31,8 +24,7 @@ VOLUME ["$DOCKYARD_SRVHOME/media/", "$DOCKYARD_SRVHOME/logs/"]
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install -r requirements.txt
-RUN rm requirements.txt
+RUN pip install -r requirements.txt && rm requirements.txt
 
 # Copy application source code to SRCDIR
 COPY $DOCKYARD_SRC $DOCKYARD_SRVPROJ
@@ -44,5 +36,10 @@ EXPOSE 8000
 WORKDIR $DOCKYARD_SRVPROJ
 COPY ./gunicorn-start.sh /
 
+# Copy server block for nginx
+COPY ./django_nginx.conf /etc/nginx/sites-available/
+RUN ln -s /etc/nginx/sites-available/django_nginx.conf /etc/nginx/sites-enabled
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+
 # intend gunicorn-start to be the entrypoint command for this image
-ENTRYPOINT ["/gunicorn-start.sh"]
+CMD ["/gunicorn-start.sh"]
