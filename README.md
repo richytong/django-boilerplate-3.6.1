@@ -33,11 +33,15 @@ You configure
 
 [database declaration](https://github.com/richytong/django-boilerplate-3.6.1/blob/master/src/config/settings/defaults/database.py) - /src/config/settings/defaults/database.py
 
-	Specify your database configurations in DATABASES. Default here is sqlite but it is highly recommended to use a relational database like PostGresQL.
+	Specify your database configurations in DATABASES. Default here is sqlite but
+	it is highly recommended to use a relational database like PostGresQL.
 
 [settings modules](https://github.com/richytong/django-boilerplate-3.6.1/tree/master/src/config/settings) - /src/config/settings/
 
-	Your deployment-specific settings. Ensure DB_MAIN corresponds to keys you specified in database.py DATABASES. DB_MAIN specifies the database used by the different deployments {'test_dev', 'staging', 'production'} of your application. This is convenient for isolated deployments of your application at the data layer, but you can also point DB_MAIN to the same database for all deployments of your application.
+	Your deployment-specific settings. Ensure DB_MAIN corresponds to keys you specified in database.py DATABASES.
+	DB_MAIN specifies the database used by the different deployments {'test_dev', 'staging', 'production'} of
+	your application. This is convenient for isolated deployments of your application at the data layer, but you
+	can also point DB_MAIN to the same database for all deployments of your application.
 
 [Fabric3](https://github.com/richytong/django-boilerplate-3.6.1/blob/master/fabfile.py) - /fabfile.py
 
