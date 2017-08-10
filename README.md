@@ -79,7 +79,8 @@ This is shorthand for python src/manage.py runserver
 
 Run a container locally
 -----------------------
-Build the Docker image. You must specify which deployment {'staging', 'production'} to build. Here we build a staging image.
+Build the Docker image. You must specify which deployment {'staging', 'production'} to build.
+Here we build a staging image.
 
 	fab build:staging
 
@@ -87,12 +88,14 @@ Clean up old images. If this is your first build you will not need to use this.
 
 	fab clean
 
-Run your container. The container will run on port 80 by default.
-You can find your project on http://localhost/. Check static files are serving correctly with http://localhost/admin (if it is ugly, something went wrong)
+Run your container. The container will run on port 80 by default. You can find your project on
+http://localhost/. Check static files are serving correctly with http://localhost/admin
+(if it is ugly, something went wrong)
 
 	fab start
 
-Optionally, attach to your running container and run bash at your leisure. You can exit your container at any time using `exit`
+Optionally, attach to your running container and run bash at your leisure. You can exit your
+container at any time using `exit`
 
 	fab attach
 
