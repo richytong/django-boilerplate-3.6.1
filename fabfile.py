@@ -1,13 +1,14 @@
 import os
+import json
 from fabric.api import task, local
 
-region   = 'us-east-1'
-image    = 'pinktest:latest'
-account  = 'your_aws_accountprovidedbyaws'
+region   = '<YOUR_AWS_REGION>'
+image    = '<YOUR_IMAGE_NAME>' # ex: pinktest:latest
+account  = '<YOUR_AWS_ACCOUNT>'
 endpoint = f'{account}.dkr.ecr.{region}.amazonaws.com/{image}'
 environments = {
-	'staging'   : 'your_staging_environment',
-	'production': 'your_production_environment'
+	'staging'   : '<YOUR_STAGING_EB_ENVIRONMENT>',
+	'production': '<YOUR_PRODUCTION_EB_ENVIRONMENT>'
 }
 
 
@@ -71,14 +72,33 @@ def push():
 '''
 Deploys using eb deploy, requires the correct .elasticbeanstalk/config.yml
 and a Dockerrun.aws.json file. Make sure you are in your aws cli environment
+This generates an Dockerrun.aws.json file that is the sole file uploaded using eb
 '''
 @task
 def eb(spec):
+	dockerrun_dict = {
+		'AWSEBDockerrunVersion': '1',
+		'Image': {
+			'Name': endpoint,
+			'Update': 'true'
+		},
+		'Ports': [
+			{
+				'ContainerPort': '80'
+			}
+		],
+		'Logging': '/var/log/nginx'
+	}
+	with open('Dockerrun.aws.json', 'w') as f:
+		f.write(json.dumps(dockerrun_dict, indent=4))
+
 	e = environments[spec]
 	print(f'Calling eb deploy for {e}')
 	v = local(f'eb status {e} | grep \'Deployed Version\' | awk \'{print $3}\'', capture=True)
 	v_new = input(f'Current running version is {v}. Specify new version: ')
 	local(f'eb deploy -l {v_new} {e}')
+
+	local('rm Dockerrun.aws.json')
 
 
 ####################################################################################

@@ -114,6 +114,7 @@ Transfer your Docker image to the AWS repository
 	fab push
 
 Use eb cli to deploy your project for a specified deployment {'staging', 'production'}. If this is your first deployment you must run `aws configure` and `eb config` and supply the necessary arguments and credentials.
+This command also generates the Dockerrun.aws.json file needed for AWS Elastic Beanstalk deployment
 
 	fab eb:staging
 
@@ -126,5 +127,6 @@ https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postg
 https://docs.docker.com/engine/reference/builder/
 https://github.com/moby/moby/issues/6822#issuecomment-168170031
 https://www.twoscoopspress.com/products/two-scoops-of-django-1-8
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/using-features.logging.html
 
 
