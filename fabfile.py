@@ -94,7 +94,8 @@ def eb(spec):
 
 	e = environments[spec]
 	print(f'Calling eb deploy for {e}')
-	v = local(f'eb status {e} | grep \'Deployed Version\' | awk \'{print $3}\'', capture=True)
+	awk = 'awk \'{print $3}\''
+	v = local(f'eb status {e} | grep \'Deployed Version\' | {awk}', capture=True)
 	v_new = input(f'Current running version is {v}. Specify new version: ')
 	local(f'eb deploy -l {v_new} {e}')
 
