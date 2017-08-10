@@ -116,12 +116,12 @@ def start(spec=None):
 		try:
 			local(f'docker run -it {image} /bin/bash')
 		except:
-			print(f'Unable to find {image}, please check the image')
+			print(f'Unable to run {image}, please check the image or docker ps')
 	else:
 		try:
 			local(f'docker run -p 80:80 {image}')
 		except:
-			print(f'Unable to find {image}, please check the image')
+			print(f'Unable to run {image}, please check the image or docker ps')
 
 '''
 stop the container running latest image
