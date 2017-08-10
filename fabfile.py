@@ -1,7 +1,6 @@
 import os
 from fabric.api import task, local
 
-account  = 'youraccount'
 region   = 'us-east-1'
 image    = 'pinktest:latest'
 account  = 'your_aws_accountprovidedbyaws'

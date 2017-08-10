@@ -43,17 +43,19 @@ You configure
 
 	Fabric is a simple, Pythonic tool for remote execution and deployment. It is more powerful than a simple bash script or Makefile. Read more [here](https://github.com/mathiasertl/fabric/).
 
-		account - your AWS account
+		region       - Region on AWS hosting your servers
 
-		region - region on AWS hosting your servers
-
-		image - title of your image. This follows the format __name__:__version__. Version defaults to 'latest'
+		image        - Title of your image. This follows the format __name__:__version__.
+		               Version defaults to 'latest'
 		
-		account - Your AWS account. This is given to you when you created your account with AWS and necessary to log in to the AWS console.
+		account      - Your AWS account. This is given to you when you created your account with AWS
+		               and is necessary to log in to the AWS console.
 		
-		endpoint - AWS path representation of your AWS docker repository. Images are pushed here and tagged as this.
+		endpoint     - AWS path representation of your AWS docker repository.
+		               Images are pushed here and tagged as this.
 
-		environments - Dictionary mapping {'staging, 'production'} to the environments you created on the AWS console.
+		environments - Dictionary mapping {'staging, 'production'} to the environments you
+		               created on the AWS console.
 
 
 Build your project
