@@ -46,7 +46,8 @@ You configure
 
 [Fabric3](https://github.com/richytong/django-boilerplate-3.6.1/blob/master/fabfile.py) - /fabfile.py
 
-	Fabric is a simple, Pythonic tool for remote execution and deployment. It is more powerful than a simple bash script or Makefile. Read more [here](https://github.com/mathiasertl/fabric/).
+	Fabric is a simple, Pythonic tool for remote execution and deployment. It is more powerful
+	than a simple bash script or Makefile. Read more [here](https://github.com/mathiasertl/fabric/).
 
 		region       - Region on AWS hosting your servers
 
