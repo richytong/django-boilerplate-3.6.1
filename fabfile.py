@@ -4,7 +4,12 @@ from fabric.api import task, local
 account  = 'youraccount'
 region   = 'us-east-1'
 image    = 'pinktest:latest'
+account  = 'your_aws_accountprovidedbyaws'
 endpoint = f'{account}.dkr.ecr.{region}.amazonaws.com/{image}'
+environments = {
+	'staging'   : 'your_staging_environment',
+	'production': 'your_production_environment'
+}
 
 
 ####################################################################################
@@ -59,6 +64,9 @@ Tags image for aws ecs repository then pushes to that repository.
 '''
 @task
 def push():
+	print(f'tagging {image}...')
+	local(f'docker tag {image} {endpoint}')
+	print(f'tagged image: {endpoint}')
 	local(f'docker push {endpoint}')
 
 '''
@@ -66,19 +74,12 @@ Deploys using eb deploy, requires the correct .elasticbeanstalk/config.yml
 and a Dockerrun.aws.json file. Make sure you are in your aws cli environment
 '''
 @task
-def eb(spec=None):
-	if spec == 'production':
-		v = local("eb status {}".format(production_env), capture=True).split("\n")[3].split(":")[1].strip().split("-")
-		v_new = "{}.{}.{}".format(v[0], v[1], str(int(v[2]) + 1))
-		v_new = 'P-D2-3'
-		local('eb deploy -l {} {}'.format(v_new, production_env))
-
-		# python 3.6.1: local(f'eb deploy -l {v_new} {production_env}')
-
-	else:
-		v = local("eb status {}".format(staging_env), capture=True).split("\n")[3].split(":")[1].strip().split("-")
-		v_new = "{}-{}-{}".format(v[0], v[1], str(int(v[2]) + 1))
-		local("eb deploy -l {} {}".format(v_new, staging_env))
+def eb(spec):
+	e = environments[spec]
+	print(f'Calling eb deploy for {e}')
+	v = local(f'eb status {e} | grep \'Deployed Version\' | awk \'{print $3}\'', capture=True)
+	v_new = input(f'Current running version is {v}. Specify new version: ')
+	local(f'eb deploy -l {v_new} {e}')
 
 
 ####################################################################################
