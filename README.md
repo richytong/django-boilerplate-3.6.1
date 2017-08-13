@@ -3,6 +3,8 @@ Django Boilerplate for Python 3.6.1
 
 This Django Boilerplate quickly encapsulates your source code in a Docker container running Gunicorn behind an Nginx reverse proxy. This project uses Fabric3 to handle most of the deployment and administration tasks.
 
+!(container-diagram.png)[https://github.com/richytong/django-boilerplate-3.6.1/blob/master/container-diagram.png]
+
 Prerequisites
 -------------
 pip - You can install pip with [Homebrew](https://brew.sh/)
