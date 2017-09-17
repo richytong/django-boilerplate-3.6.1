@@ -10,3 +10,6 @@ Dockerrun.aws.json
 
 # Sqlite
 *.sqlite3
+
+# npm
+node_modules/
